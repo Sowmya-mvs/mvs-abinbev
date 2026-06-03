@@ -27,6 +27,7 @@ const Favorites = () => {
       navigate('/');
       return;
     }
+    setMessage('');
     try {
       const result = await dispatch(removeFavorite({ token, bookId })).unwrap();
       setMessage(result.message || 'Book removed from favorites');

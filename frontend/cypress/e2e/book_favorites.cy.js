@@ -1,7 +1,8 @@
 describe('Book Favorites App', () => {
   // generate a random username and password for the e2e tests
-  const username = `e2euser${Math.floor(Math.random() * 1000)}`;
-  const password = `e2epass${Math.floor(Math.random() * 1000)}`;
+  const uniqueId = `${Date.now()}${Math.floor(Math.random() * 100000)}`;
+  const username = `e2euser${uniqueId}`;
+  const password = `e2epass${uniqueId}`;
   const user = { username, password };
 
   beforeEach(() => {
