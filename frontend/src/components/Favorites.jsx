@@ -39,7 +39,7 @@ const Favorites = () => {
   return (
     <div>
       <h2>My Favorite Books</h2>
-      {message && <div role="status">{message}</div>}
+      {message && <div role="status" aria-live="polite">{message}</div>}
       {favorites.length === 0 ? (
         <div style={{
           background: '#fff',
