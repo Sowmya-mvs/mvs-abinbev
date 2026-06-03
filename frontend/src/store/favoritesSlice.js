@@ -2,21 +2,34 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 export const fetchFavorites = createAsyncThunk('favorites/fetchFavorites', async (token) => {
   const res = await fetch('http://localhost:4000/api/favorites', {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: 'Bearer ' + token },
   });
   return res.json();
 });
 
 export const addFavorite = createAsyncThunk('favorites/addFavorite', async ({ token, bookId }) => {
-  await fetch('http://localhost:4000/api/favorites', {
+  const addRes = await fetch('http://localhost:4000/api/favorites', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+      Authorization: 'Bearer ' + token,
     },
     body: JSON.stringify({ bookId }),
   });
-  return bookId;
+
+  if (!addRes.ok) {
+    throw new Error('Failed to add favorite');
+  }
+
+  const favoritesRes = await fetch('http://localhost:4000/api/favorites', {
+    headers: { Authorization: 'Bearer ' + token },
+  });
+
+  if (!favoritesRes.ok) {
+    throw new Error('Failed to refresh favorites');
+  }
+
+  return favoritesRes.json();
 });
 
 export const removeFavorite = createAsyncThunk('favorites/removeFavorite', async ({ token, bookId }) => {
@@ -43,6 +56,9 @@ const favoritesSlice = createSlice({
         state.items = action.payload;
       })
       .addCase(fetchFavorites.rejected, state => { state.status = 'failed'; })
+      .addCase(addFavorite.fulfilled, (state, action) => {
+        state.items = action.payload;
+      })
       .addCase(removeFavorite.fulfilled, (state, action) => {
         state.items = state.items.filter(book => book.id !== action.payload.bookId);
       });
