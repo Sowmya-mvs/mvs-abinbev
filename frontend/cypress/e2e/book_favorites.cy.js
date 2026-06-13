@@ -1,7 +1,8 @@
 describe('Book Favorites App', () => {
   // generate a random username and password for the e2e tests
-  const username = `e2euser${Math.floor(Math.random() * 1000)}`;
-  const password = `e2epass${Math.floor(Math.random() * 1000)}`;
+  const uniqueId = `${Date.now()}${Math.floor(Math.random() * 100000)}`;
+  const username = `e2euser${uniqueId}`;
+  const password = `e2epass${uniqueId}`;
   const user = { username, password };
 
   beforeEach(() => {
@@ -34,6 +35,9 @@ describe('Book Favorites App', () => {
     cy.get('button').contains('Add to Favorites').first().click();
     cy.get('a#favorites-link').click();
     cy.get('h2').contains('My Favorite Books').should('exist');
+    cy.contains('button', 'Remove from Favorites').first().click();
+    cy.contains(/Book (removed from favorites|was not in favorites)/).should('exist');
+    cy.contains('No favorite books yet.').should('exist');
   });
 
   it('should logout and protect routes', () => {
